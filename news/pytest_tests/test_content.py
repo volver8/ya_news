@@ -8,7 +8,6 @@ from django.contrib.auth import get_user_model
 from pytest_django.asserts import assertRedirects
 
 from news.forms import CommentForm
-from news.models import Comment, News
 from .conftest import NEWS_COUNT_ON_HOME_PAGE
 
 User = get_user_model()
@@ -53,8 +52,8 @@ def test_anonymous_client_has_no_form(client, news):
 
 
 @pytest.mark.django_db
-def test_authorized_client_has_form(not_author_client, news):
+def test_authorized_client_has_form(admin_client, news):
     url = reverse('news:detail', args=(news.id,))
-    response = not_author_client.get(url)
+    response = admin_client.get(url)
     assert 'form' in response.context
     assert isinstance(response.context['form'], CommentForm)
