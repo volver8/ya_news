@@ -6,8 +6,7 @@ from pytest_django.asserts import assertRedirects, assertFormError
 from django.urls import reverse
 
 from news.forms import BAD_WORDS, WARNING
-from news.models import Comment, News
-
+from news.models import Comment
 
 
 @pytest.mark.django_db
@@ -21,12 +20,13 @@ def test_anonymous_user_cant_create_note(client, news, form_data):
 
 
 @pytest.mark.django_db
-def test_user_can_create_comment(admin_client, news, form_data):
+def test_user_can_create_comment(admin_client, admin_user, news, form_data):
     url = reverse('news:detail', args=(news.id,))
     response = admin_client.post(url, data=form_data)
     assertRedirects(response, f'{url}#comments')
     assert Comment.objects.count() == 1
     new_comment = Comment.objects.get()
+    assert new_comment.news == news
     assert new_comment.text == form_data['text']
 
 
@@ -48,7 +48,6 @@ def test_author_can_edit_comment(
 ):
     url = reverse('news:edit', args=(comment.id,))
     response = author_client.post(url, form_data)
-    # Проверяем редирект:
     assertRedirects(response, url_to_comments)
     comment.refresh_from_db()
     assert comment.text == form_data['text']

@@ -1,11 +1,7 @@
-from datetime import datetime, timedelta
-
 import pytest
 
 from django.urls import reverse
-from django.utils import timezone
 from django.contrib.auth import get_user_model
-from pytest_django.asserts import assertRedirects
 
 from news.forms import CommentForm
 from .conftest import NEWS_COUNT_ON_HOME_PAGE
@@ -17,6 +13,7 @@ User = get_user_model()
 def test_count_of_news_in_home_page(client, all_news):
     url = reverse('news:home')
     response = client.get(url)
+    assert 'object_list' in response.context
     object_list = response.context['object_list']
     news_count = object_list.count()
     assert news_count is NEWS_COUNT_ON_HOME_PAGE
@@ -26,6 +23,7 @@ def test_count_of_news_in_home_page(client, all_news):
 def test_order_of_news_in_home_page(client, all_news):
     url = reverse('news:home')
     response = client.get(url)
+    assert 'object_list' in response.context
     object_list = response.context['object_list']
     all_dates = [news.date for news in object_list]
     sorted_dates = sorted(all_dates, reverse=True)
