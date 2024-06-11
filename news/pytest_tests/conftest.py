@@ -1,9 +1,8 @@
 from datetime import datetime, timedelta
-import pytest
 
+import pytest
 from django.test.client import Client
 from django.utils import timezone
-from django.conf import settings
 from django.urls import reverse
 
 from news.models import News, Comment
@@ -97,7 +96,84 @@ def form_data():
 
 
 @pytest.fixture
-def url_to_comments(news):
-    news_url = reverse('news:detail', args=(news.id,))
-    url_to_comments = news_url + '#comments'
+def detail_url(news):
+    detail_url = reverse('news:detail', args=(news.id,))
+    return detail_url
+
+
+@pytest.fixture
+def edit_url(comment):
+    edit_url = reverse('news:edit', args=(comment.id,))
+    return edit_url
+
+
+@pytest.fixture
+def delete_url(comment):
+    delete_url = reverse('news:delete', args=(comment.id,))
+    return delete_url
+
+
+@pytest.fixture
+def home_url():
+    home_url = reverse('news:home')
+    return home_url
+
+
+@pytest.fixture
+def login_url():
+    login_url = reverse('users:login')
+    return login_url
+
+
+@pytest.fixture
+def logout_url():
+    logout_url = reverse('users:logout')
+    return logout_url
+
+
+@pytest.fixture
+def signup_url():
+    signup_url = reverse('users:signup')
+    return signup_url
+
+
+@pytest.fixture
+def url_to_comments(detail_url):
+    url_to_comments = detail_url + '#comments'
     return url_to_comments
+
+
+@pytest.fixture
+def urls_for_anonymous():
+    urls_for_anonymous = (
+        'news:home',
+        'news:detail',
+        'users:login',
+        'users:logout',
+        'signup_url'
+    )
+    return urls_for_anonymous
+
+
+@pytest.fixture
+def args_for_anonymous(news):
+    args_for_anonymous = (
+        None,
+        news.id,
+        None,
+        None,
+        None
+    )
+    return args_for_anonymous
+
+
+@pytest.fixture
+def urls_to_change_comment(
+    delete_url,
+    edit_url
+):
+    urls_to_change_comment = (
+        delete_url,
+        edit_url
+    )
+    return urls_to_change_comment
