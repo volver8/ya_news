@@ -11,16 +11,18 @@ User = get_user_model()
 
 @pytest.mark.django_db
 def test_count_of_news_in_home_page(client, all_news):
+    """Тест количества новостей."""
     url = reverse('news:home')
     response = client.get(url)
     assert 'object_list' in response.context
     object_list = response.context['object_list']
     news_count = object_list.count()
-    assert news_count is NEWS_COUNT_ON_HOME_PAGE
+    assert news_count == NEWS_COUNT_ON_HOME_PAGE
 
 
 @pytest.mark.django_db
 def test_order_of_news_in_home_page(client, all_news):
+    """Тест сортировки новостей."""
     url = reverse('news:home')
     response = client.get(url)
     assert 'object_list' in response.context
@@ -32,6 +34,7 @@ def test_order_of_news_in_home_page(client, all_news):
 
 @pytest.mark.django_db
 def test_comments_order(client, news, all_comments):
+    """Тест сортировки комментариев на странице новости."""
     url = reverse('news:detail', args=(news.id,))
     response = client.get(url)
     assert 'news' in response.context
@@ -44,6 +47,7 @@ def test_comments_order(client, news, all_comments):
 
 @pytest.mark.django_db
 def test_anonymous_client_has_no_form(client, news):
+    """Тест наличия формы в словаре контекста для анонимуса."""
     url = reverse('news:detail', args=(news.id,))
     response = client.get(url)
     assert 'form' not in response.context
@@ -51,6 +55,10 @@ def test_anonymous_client_has_no_form(client, news):
 
 @pytest.mark.django_db
 def test_authorized_client_has_form(admin_client, news):
+    """
+    Тест наличия формы в словаре контекста
+    для авторизированного пользователя.
+    """
     url = reverse('news:detail', args=(news.id,))
     response = admin_client.get(url)
     assert 'form' in response.context

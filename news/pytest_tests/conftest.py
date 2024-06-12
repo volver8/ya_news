@@ -126,54 +126,16 @@ def login_url():
 
 
 @pytest.fixture
-def logout_url():
-    logout_url = reverse('users:logout')
-    return logout_url
-
-
-@pytest.fixture
-def signup_url():
-    signup_url = reverse('users:signup')
-    return signup_url
-
-
-@pytest.fixture
 def url_to_comments(detail_url):
     url_to_comments = detail_url + '#comments'
     return url_to_comments
 
 
 @pytest.fixture
-def urls_for_anonymous():
-    urls_for_anonymous = (
-        'news:home',
-        'news:detail',
-        'users:login',
-        'users:logout',
-        'signup_url'
-    )
-    return urls_for_anonymous
+def news_id_for_args(news):
+    return (news.id,)
 
 
 @pytest.fixture
-def args_for_anonymous(news):
-    args_for_anonymous = (
-        None,
-        news.id,
-        None,
-        None,
-        None
-    )
-    return args_for_anonymous
-
-
-@pytest.fixture
-def urls_to_change_comment(
-    delete_url,
-    edit_url
-):
-    urls_to_change_comment = (
-        delete_url,
-        edit_url
-    )
-    return urls_to_change_comment
+def comment_id_for_args(comment):
+    return (comment.id,)
